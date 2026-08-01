@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Compare Two Things{% if name_a and name_b %} — {{ name_a }} vs {{ name_b }}{% endif %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <main class="page">
+
+    <header class="topbar">
+      <span class="brand-mark">VS</span>
+      <span class="brand-name">compare<strong>anything</strong></span>
+    </header>
+
+    <nav class="tabs">
+      {% for key, d in domains.items() %}
+      <a class="tab {{ 'is-active' if key == current_domain else '' }}" href="/?domain={{ key }}">{{ d.label }}</a>
+      {% endfor %}
+    </nav>
+
+    <form class="compare-form" action="/" method="get">
+      <input type="hidden" name="domain" value="{{ current_domain }}">
+      <div class="input-pair">
+        <div class="input-field input-field--a">
+          <label for="a">A</label>
+          <input type="text" id="a" name="a" value="{{ a }}" placeholder="{{ current.example_a }}" autocomplete="off">
+        </div>
+        <span class="vs-glyph">VS</span>
+        <div class="input-field input-field--b">
+          <label for="b">B</label>
+          <input type="text" id="b" name="b" value="{{ b }}" placeholder="{{ current.example_b }}" autocomplete="off">
+        </div>
+      </div>
+      <p class="input-hint">{{ current.placeholder }} — e.g. "{{ current.example_a }}" vs "{{ current.example_b }}"</p>
+      <button type="submit" class="compare-btn">Compare</button>
+    </form>
+
+    {% if fields %}
+    <section class="results">
+      <div class="results-header">
+        <span class="side-name side-name--a">{{ name_a }}{% if error_a %} <span class="side-error">— {{ error_a }}</span>{% endif %}</span>
+        <span class="vs-glyph vs-glyph--small">VS</span>
+        <span class="side-name side-name--b">{{ name_b }}{% if error_b %} <span class="side-error">— {{ error_b }}</span>{% endif %}</span>
+      </div>
+
+      <div class="comparison-table">
+        {% for f in fields %}
+        <div class="comparison-row">
+          <div class="cell cell--a {{ 'is-winner' if f.winner == 'a' else '' }}">{{ f.display_a }}</div>
+          <div class="cell-label">{{ f.label }}</div>
+          <div class="cell cell--b {{ 'is-winner' if f.winner == 'b' else '' }}">{{ f.display_b }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+
+  </main>
+
+  <footer class="footer">
+    <span>One comparison table, four data sources — same schema, zero domain-specific rendering logic</span>
+  </footer>
+</body>
+</html>
